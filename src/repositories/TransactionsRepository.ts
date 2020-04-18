@@ -14,11 +14,27 @@ class TransactionsRepository {
   }
 
   public all(): Transaction[] {
-    // TODO
+    return this.transactions
   }
 
   public getBalance(): Balance {
-    // TODO
+    let income = 0
+    let outcome = 0
+
+    if( this.transactions.length > 0 ){
+      income = this.transactions
+      .filter((transaction: Transaction) => transaction.type === "income")
+      .reduce(function (accumulator: number, transaction: Transaction) {
+        return accumulator + transaction.value;
+      }, 0);
+      outcome = this.transactions
+      .filter((transaction: Transaction) => transaction.type === "outcome")
+      .reduce(function (accumulator: number, transaction: Transaction) {
+        return accumulator + transaction.value;
+      }, 0);
+    }
+    
+    return {  income, outcome, total: income - outcome }
   }
 
   public create({title, value, type}: Omit<Transaction, 'id'>): Transaction {

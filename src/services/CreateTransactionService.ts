@@ -1,12 +1,6 @@
 import TransactionsRepository from '../repositories/TransactionsRepository';
 import Transaction from '../models/Transaction';
 
-interface Transaction {
-  title: string;
-  value: number;
-  type: 'income' | 'outcome';
-}
-
 class CreateTransactionService {
   private transactionsRepository: TransactionsRepository;
 
@@ -20,6 +14,10 @@ class CreateTransactionService {
     }
     if(type !== 'income' && type !== 'outcome'){
       throw Error('The type should be income or outcome.')
+    }
+    const {total} = this.transactionsRepository.getBalance()
+    if(type === 'outcome' && value > total){
+      throw Error('Insufficient balance for the transaction.')
     }
     
     const transaction = this.transactionsRepository.create({title, value, type})
